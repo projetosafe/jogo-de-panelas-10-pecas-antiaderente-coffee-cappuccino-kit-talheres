@@ -6,7 +6,7 @@
   const noNumber = form.elements.noNumber;
   const requestedQuantity = Number(new URLSearchParams(location.search).get('quantity'));
   const orderQuantity = Number.isInteger(requestedQuantity) && requestedQuantity > 0 ? Math.min(99, requestedQuantity) : 1;
-  const cents = 19999 * orderQuantity;
+  const cents = 5990 * orderQuantity;
   const total = (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   document.getElementById('order-quantity').textContent = orderQuantity;
   ['item-subtotal', 'products-total', 'payment-total'].forEach(id => { document.getElementById(id).textContent = total; });
