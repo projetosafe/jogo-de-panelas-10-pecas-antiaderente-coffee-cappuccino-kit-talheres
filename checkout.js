@@ -11,7 +11,7 @@
   document.getElementById('order-quantity').textContent = orderQuantity;
   ['item-subtotal', 'products-total', 'payment-total'].forEach(id => { document.getElementById(id).textContent = total; });
   document.getElementById('generate-pix').addEventListener('click', () => {
-    const payload = StaticPix.build({ key: '44769766000100', name: 'Shopee Online', city: 'RIO DE JANEIRO', cents });
+    const payload = StaticPix.build({ key: '44769766000100', name: 'ZG NEGOCIOS DIGITAIS', city: 'RIO DE JANEIRO', cents });
     const qr = qrcode(0, 'M');
     qr.addData(payload, 'Byte');
     qr.make();
