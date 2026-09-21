@@ -7,6 +7,7 @@
   const requestedQuantity = Number(new URLSearchParams(location.search).get('quantity'));
   const orderQuantity = Number.isInteger(requestedQuantity) && requestedQuantity > 0 ? Math.min(99, requestedQuantity) : 1;
   const cents = 5990 * orderQuantity;
+  let purchaseTracked = false;
   const total = (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   document.getElementById('order-quantity').textContent = orderQuantity;
   ['item-subtotal', 'products-total', 'payment-total'].forEach(id => { document.getElementById(id).textContent = total; });
@@ -82,6 +83,10 @@
     openButton.textContent = 'Trocar';
     dialog.close();
     document.getElementById('payment-step').hidden = false;
+    if (!purchaseTracked && window.fbq) {
+      fbq('track', 'Purchase', { value: cents / 100, currency: 'BRL' });
+      purchaseTracked = true;
+    }
     document.body.classList.add('payment-active');
     document.title = 'Finalizar pagamento | Achadinhos Online';
     history.replaceState(null, '', '#pagamento');
