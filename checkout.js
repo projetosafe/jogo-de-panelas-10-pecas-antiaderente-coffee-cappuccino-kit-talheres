@@ -39,9 +39,34 @@
   noNumber.addEventListener('change', () => {
     number.disabled = noNumber.checked;
   });
-  form.elements.postalCode.addEventListener('input', event => {
+  let postalCodeRequest;
+  form.elements.postalCode.addEventListener('input', async event => {
     const digits = event.target.value.replace(/\D/g, '').slice(0, 8);
     event.target.value = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+    event.target.setCustomValidity('');
+    const request = Symbol('postalCodeRequest');
+    postalCodeRequest = request;
+    if (digits.length !== 8) return;
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+      if (!response.ok) throw new Error('CEP indisponível');
+      const address = await response.json();
+      if (postalCodeRequest !== request) return;
+      if (address.erro) {
+        event.target.setCustomValidity('CEP não encontrado.');
+        event.target.reportValidity();
+        return;
+      }
+      form.elements.street.value = address.logradouro || '';
+      form.elements.district.value = address.bairro || '';
+      form.elements.city.value = [address.uf, address.localidade].filter(Boolean).join(' - ');
+      form.elements.number.focus();
+    } catch {
+      if (postalCodeRequest !== request) return;
+      event.target.setCustomValidity('Não foi possível consultar o CEP. Tente novamente.');
+      event.target.reportValidity();
+    }
   });
   // This static view keeps the address in memory; nothing is sent or stored.
   form.addEventListener('submit', event => {
