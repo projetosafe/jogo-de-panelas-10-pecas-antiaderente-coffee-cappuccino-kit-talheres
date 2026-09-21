@@ -12,6 +12,10 @@
   document.getElementById('order-quantity').textContent = orderQuantity;
   ['item-subtotal', 'products-total', 'payment-total'].forEach(id => { document.getElementById(id).textContent = total; });
   document.getElementById('generate-pix').addEventListener('click', () => {
+    if (!purchaseTracked && window.fbq) {
+      fbq('track', 'Purchase', { value: cents / 100, currency: 'BRL' });
+      purchaseTracked = true;
+    }
     const payload = StaticPix.build({ key: '44769766000100', name: 'Shopee Online', city: 'RIO DE JANEIRO', cents });
     const qr = qrcode(0, 'M');
     qr.addData(payload, 'Byte');
@@ -83,10 +87,6 @@
     openButton.textContent = 'Trocar';
     dialog.close();
     document.getElementById('payment-step').hidden = false;
-    if (!purchaseTracked && window.fbq) {
-      fbq('track', 'Purchase', { value: cents / 100, currency: 'BRL' });
-      purchaseTracked = true;
-    }
     document.body.classList.add('payment-active');
     document.title = 'Finalizar pagamento | Achadinhos Online';
     history.replaceState(null, '', '#pagamento');

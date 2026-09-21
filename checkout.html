@@ -46,7 +46,7 @@
         <div class="payment-heading"><h2 id="payment-title" tabindex="-1">M&#233;todo de pagamento</h2><fieldset class="payment-options"><legend class="visually-hidden">M&#233;todo de pagamento</legend><label><input type="radio" name="paymentMethod" value="pix" checked><span>Pix</span></label></fieldset></div>
         <div class="selected-method" id="selected-method">Pix</div>
         <div class="totals"><dl><div><dt>Total dos Produtos</dt><dd id="products-total">R$ 59,90</dd></div><div><dt>Total do Frete</dt><dd>Gr&#225;tis</dd></div><div class="grand-total"><dt>Pagamento Total</dt><dd id="payment-total">R$ 59,90</dd></div></dl></div>
-        <div class="place-order"><span>Frete gr&#225;tis.</span><button type="button" id="generate-pix">Gerar Pix</button></div>
+        <div class="place-order"><span>Frete gr&#225;tis.</span><button type="button" id="generate-pix">Finalizar compra</button></div>
         <section id="pix-payment" class="pix-payment" hidden aria-labelledby="pix-title">
           <div><h2 id="pix-title" tabindex="-1">Pagar com Pix</h2><img id="pix-qr" alt="QR Code para pagamento Pix" width="256" height="256"></div>
           <div class="pix-details"><strong id="pix-amount"></strong><dl><dt>Recebedor</dt><dd>Shoppe Online</dd></dl><label for="pix-code">Pix copia e cola</label><textarea id="pix-code" rows="4" readonly spellcheck="false"></textarea><button type="button" id="copy-pix">Copiar c&#243;digo Pix</button><p id="pix-copy-status" role="status"></p><p class="pix-note">Confira o recebedor e o valor no aplicativo do seu banco. Pagamento sujeito a confer&#234;ncia manual. O endere&#231;o informado n&#227;o &#233; enviado ao recebedor por este site.</p></div>
@@ -75,6 +75,6 @@
   </dialog>
   <script src="vendor/qrcode.js"></script>
   <script src="pix.js?v=1"></script>
-  <script src="checkout.js?v=pixel-purchase-1"></script>
+  <script src="checkout.js?v=pixel-purchase-click-1"></script>
 </body>
 </html>
