@@ -10,19 +10,24 @@ create table if not exists public.site_visits (
 alter table public.site_visits enable row level security;
 
 grant insert on table public.site_visits to anon;
-grant select on table public.site_visits to authenticated;
+grant select on table public.site_visits to anon;
 grant usage, select on sequence public.site_visits_id_seq to anon;
 
 create policy "Permitir registro público de visitas"
 on public.site_visits
 for insert
 to anon
-with check (true);
+with check (
+  page = '/jogo-de-panelas-10-pecas-antiaderente-coffee-cappuccino-kit-talheres/'
+  and char_length(session_id) between 1 and 100
+  and device in ('Celular', 'Computador')
+  and (referrer is null or char_length(referrer) <= 500)
+);
 
 create policy "Permitir leitura do painel"
 on public.site_visits
 for select
-to authenticated
-using (lower(auth.jwt() ->> 'email') = lower('davidzago20@gmail.com'));
+to anon
+using (true);
 
 alter publication supabase_realtime add table public.site_visits;
