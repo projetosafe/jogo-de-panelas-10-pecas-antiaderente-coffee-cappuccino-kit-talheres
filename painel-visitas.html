@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel de visitas</title>
+  <link rel="stylesheet" href="painel-visitas.css?v=1">
+</head>
+<body>
+  <main class="dashboard">
+    <header>
+      <div>
+        <p class="eyebrow"><span class="live-dot"></span> Atualização em tempo real</p>
+        <h1>Visitas no site</h1>
+      </div>
+      <button id="refresh" type="button">Atualizar</button>
+    </header>
+
+    <section class="metrics" aria-label="Resumo das visitas">
+      <article><span>Hoje</span><strong id="today-count">0</strong></article>
+      <article><span>Últimos 60 minutos</span><strong id="hour-count">0</strong></article>
+      <article><span>Visitantes únicos hoje</span><strong id="unique-count">0</strong></article>
+      <article><span>Total</span><strong id="total-count">0</strong></article>
+    </section>
+
+    <section class="visits-card">
+      <div class="card-heading">
+        <h2>Visitas recentes</h2>
+        <span id="status">Conectando…</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Horário</th><th>Dispositivo</th><th>Origem</th></tr></thead>
+          <tbody id="visits-list"><tr><td colspan="3" class="empty">Carregando visitas…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="painel-visitas.js?v=1"></script>
+</body>
+</html>
