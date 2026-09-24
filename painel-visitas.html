@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Painel de visitas</title>
-  <link rel="stylesheet" href="painel-visitas.css?v=2">
+  <link rel="stylesheet" href="painel-visitas.css?v=3">
 </head>
 <body>
   <main class="dashboard">
@@ -17,27 +17,43 @@
     </header>
 
     <section class="metrics" aria-label="Resumo das visitas">
+      <article class="online-metric"><span>Ao vivo agora</span><strong id="live-count">0</strong></article>
       <article><span>Hoje</span><strong id="today-count">0</strong></article>
       <article><span>Últimos 60 minutos</span><strong id="hour-count">0</strong></article>
       <article><span>Visitantes únicos hoje</span><strong id="unique-count">0</strong></article>
       <article><span>Total</span><strong id="total-count">0</strong></article>
     </section>
 
-    <section class="visits-card">
-      <div class="card-heading">
-        <h2>Visitas recentes</h2>
-        <span id="status">Conectando…</span>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Horário</th><th>Página</th><th>Modelo do aparelho</th><th>Origem</th></tr></thead>
-          <tbody id="visits-list"><tr><td colspan="4" class="empty">Carregando visitas…</td></tr></tbody>
-        </table>
-      </div>
-    </section>
+    <div class="dashboard-grid">
+      <section class="visits-card live-card">
+        <div class="card-heading">
+          <div>
+            <h2><span class="live-dot"></span> Ao vivo</h2>
+            <p>Pessoas ativas no último minuto</p>
+          </div>
+          <span id="live-status">Conectando…</span>
+        </div>
+        <div id="live-list" class="live-list">
+          <div class="empty">Procurando visitantes ativos…</div>
+        </div>
+      </section>
+
+      <section class="visits-card history-card">
+        <div class="card-heading">
+          <h2>Visitas recentes</h2>
+          <span id="status">Conectando…</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Horário</th><th>Página</th><th>Modelo do aparelho</th><th>Origem</th></tr></thead>
+            <tbody id="visits-list"><tr><td colspan="4" class="empty">Carregando visitas…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="painel-visitas.js?v=3"></script>
+  <script src="painel-visitas.js?v=4"></script>
 </body>
 </html>
