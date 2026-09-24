@@ -23,6 +23,6 @@ create policy "Permitir leitura do painel"
 on public.site_visits
 for select
 to authenticated
-using (lower(auth.jwt() ->> 'email') = lower('SEU_EMAIL_AQUI'));
+using (lower(auth.jwt() ->> 'email') = lower('davidzago20@gmail.com'));
 
 alter publication supabase_realtime add table public.site_visits;
