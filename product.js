@@ -1,6 +1,11 @@
 (() => {
   const hero = document.querySelector('.e3bgiU');
   hero.src = './product-images/br-11134207-820m6-ms42s3kelced28.jpg';
+  const galleryItems = [...document.querySelectorAll('.qIctnQ')].slice(1);
+  const galleryCount = document.createElement('span');
+  galleryCount.className = 'mobile-gallery-count';
+  galleryCount.textContent = `1/${galleryItems.length}`;
+  document.querySelector('.BvNoX2')?.append(galleryCount);
   document.querySelectorAll('.qIctnQ').forEach((thumbnail, index) => {
     if (!index) return;
     thumbnail.tabIndex = 0;
@@ -14,6 +19,7 @@
       hero.alt = document.querySelector('h1').textContent;
       document.querySelectorAll('.saved-selected').forEach(el => el.classList.remove('saved-selected'));
       thumbnail.classList.add('saved-selected');
+      galleryCount.textContent = `${index}/${galleryItems.length}`;
     };
     thumbnail.addEventListener('click', select);
     thumbnail.addEventListener('keydown', event => {
