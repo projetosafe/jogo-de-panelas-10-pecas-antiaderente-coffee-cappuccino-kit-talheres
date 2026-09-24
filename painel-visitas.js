@@ -39,7 +39,7 @@
       return;
     }
 
-    const rows = response.data || [];
+    const rows = (response.data || []).filter(v => v.page !== '/verification');
     const today = rows.filter(v => v.visited_at >= startOfToday());
     const hourLimit = Date.now() - 60 * 60 * 1000;
     document.getElementById('today-count').textContent = today.length;
