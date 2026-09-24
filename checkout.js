@@ -90,6 +90,7 @@
     document.body.classList.add('payment-active');
     document.title = 'Finalizar pagamento | Achadinhos Online';
     history.replaceState(null, '', '#pagamento');
+    if (window.trackSitePage) window.trackSitePage('Pagamento Pix');
     window.scrollTo(0, 0);
   });
   dialog.showModal();

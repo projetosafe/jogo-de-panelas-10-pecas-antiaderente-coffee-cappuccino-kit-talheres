@@ -1,14 +1,5 @@
-grant select on table public.site_visits to anon;
-
 alter table public.site_visits
 add column if not exists device_model text;
-
-drop policy if exists "Permitir leitura do painel" on public.site_visits;
-create policy "Permitir leitura do painel"
-on public.site_visits
-for select
-to anon
-using (true);
 
 drop policy if exists "Permitir registro público de visitas" on public.site_visits;
 create policy "Permitir registro público de visitas"

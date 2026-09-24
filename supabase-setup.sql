@@ -4,7 +4,8 @@ create table if not exists public.site_visits (
   session_id text not null,
   page text not null,
   referrer text,
-  device text not null
+  device text not null,
+  device_model text
 );
 
 alter table public.site_visits enable row level security;
@@ -18,9 +19,16 @@ on public.site_visits
 for insert
 to anon
 with check (
-  page = '/jogo-de-panelas-10-pecas-antiaderente-coffee-cappuccino-kit-talheres/'
+  page in (
+    'Produto',
+    'Checkout',
+    'Pagamento Pix',
+    '/jogo-de-panelas-10-pecas-antiaderente-coffee-cappuccino-kit-talheres/',
+    '/jogo-de-panelas-10-pecas-antiaderente-coffee-cappuccino-kit-talheres/checkout.html'
+  )
   and char_length(session_id) between 1 and 100
   and device in ('Celular', 'Computador')
+  and (device_model is null or char_length(device_model) <= 100)
   and (referrer is null or char_length(referrer) <= 500)
 );
 

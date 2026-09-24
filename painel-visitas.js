@@ -23,14 +23,22 @@
     });
   }
 
+  function pageLabel(page) {
+    if (page === 'Produto' || page.endsWith('/jogo-de-panelas-10-pecas-antiaderente-coffee-cappuccino-kit-talheres/')) return 'Produto';
+    if (page === 'Checkout' || page.endsWith('/checkout.html')) return 'Checkout';
+    if (page === 'Pagamento Pix') return 'Pagamento Pix';
+    return page;
+  }
+
   function renderRows(rows) {
     if (!rows.length) {
-      list.innerHTML = '<tr><td colspan="3" class="empty">Nenhuma visita registrada.</td></tr>';
+      list.innerHTML = '<tr><td colspan="4" class="empty">Nenhuma visita registrada.</td></tr>';
       return;
     }
     list.innerHTML = rows.slice(0, 50).map(function (visit) {
       const time = new Date(visit.visited_at).toLocaleString('pt-BR');
-      return `<tr><td>${escapeHtml(time)}</td><td>${escapeHtml(visit.device)}</td><td>${escapeHtml(sourceLabel(visit.referrer))}</td></tr>`;
+      const model = visit.device_model || visit.device || 'Não identificado';
+      return `<tr><td>${escapeHtml(time)}</td><td>${escapeHtml(pageLabel(visit.page))}</td><td>${escapeHtml(model)}</td><td>${escapeHtml(sourceLabel(visit.referrer))}</td></tr>`;
     }).join('');
   }
 
@@ -39,7 +47,7 @@
     const response = await db.from('site_visits').select('*').order('visited_at', { ascending: false });
     if (response.error) {
       status.textContent = 'Configuração pendente';
-      list.innerHTML = '<tr><td colspan="3" class="empty">Conclua a configuração do banco de dados.</td></tr>';
+      list.innerHTML = '<tr><td colspan="4" class="empty">Conclua a configuração do banco de dados.</td></tr>';
       return;
     }
 
