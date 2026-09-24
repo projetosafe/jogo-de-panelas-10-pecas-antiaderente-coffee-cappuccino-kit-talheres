@@ -4,6 +4,8 @@
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const list = document.getElementById('visits-list');
   const status = document.getElementById('status');
+  const loginCard = document.getElementById('login-card');
+  const dashboard = document.getElementById('dashboard');
 
   function startOfToday() {
     const date = new Date();
@@ -48,11 +50,28 @@
     status.textContent = 'Ao vivo';
   }
 
+  async function openDashboard(session) {
+    if (!session) return;
+    loginCard.hidden = true;
+    dashboard.hidden = false;
+    await loadVisits();
+    db.channel('site-visits-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'site_visits' }, loadVisits)
+      .subscribe(function (state) {
+        if (state === 'SUBSCRIBED') status.textContent = 'Ao vivo';
+      });
+  }
+
+  document.getElementById('login-form').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    const message = document.getElementById('login-message');
+    const email = document.getElementById('login-email').value.trim();
+    message.textContent = 'Enviando…';
+    const response = await db.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.href } });
+    message.textContent = response.error ? 'Não foi possível enviar o link.' : 'Link enviado. Verifique seu e-mail.';
+  });
+
   document.getElementById('refresh').addEventListener('click', loadVisits);
-  db.channel('site-visits-live')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'site_visits' }, loadVisits)
-    .subscribe(function (state) {
-      if (state === 'SUBSCRIBED') status.textContent = 'Ao vivo';
-    });
-  loadVisits();
+  db.auth.getSession().then(function (result) { openDashboard(result.data.session); });
+  db.auth.onAuthStateChange(function (_, session) { openDashboard(session); });
 })();

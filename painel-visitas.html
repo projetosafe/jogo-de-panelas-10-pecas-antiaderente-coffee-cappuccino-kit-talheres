@@ -7,7 +7,17 @@
   <link rel="stylesheet" href="painel-visitas.css?v=1">
 </head>
 <body>
-  <main class="dashboard">
+  <section class="login-card" id="login-card">
+    <h1>Acessar painel</h1>
+    <p>Digite seu e-mail para receber o link seguro de acesso.</p>
+    <form id="login-form">
+      <input id="login-email" type="email" placeholder="Seu e-mail" required>
+      <button type="submit">Enviar link de acesso</button>
+    </form>
+    <p id="login-message" class="login-message"></p>
+  </section>
+
+  <main class="dashboard" id="dashboard" hidden>
     <header>
       <div>
         <p class="eyebrow"><span class="live-dot"></span> Atualização em tempo real</p>
