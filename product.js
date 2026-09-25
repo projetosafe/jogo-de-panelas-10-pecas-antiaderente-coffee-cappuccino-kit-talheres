@@ -1,25 +1,36 @@
 (() => {
   const hero = document.querySelector('.e3bgiU');
+  const productVideo = document.querySelector('.QODm2C');
   hero.src = './product-images/br-11134207-820m6-ms42s3kelced28.jpg';
-  const galleryItems = [...document.querySelectorAll('.qIctnQ')].slice(1);
+  const galleryItems = [...document.querySelectorAll('.qIctnQ')];
   const galleryCount = document.createElement('span');
   galleryCount.className = 'mobile-gallery-count';
   galleryCount.textContent = `1/${galleryItems.length}`;
   document.querySelector('.BvNoX2')?.append(galleryCount);
   document.querySelectorAll('.qIctnQ').forEach((thumbnail, index) => {
-    if (!index) return;
     thumbnail.tabIndex = 0;
     thumbnail.setAttribute('role', 'button');
-    thumbnail.setAttribute('aria-label', `Foto ${index} do produto`);
+    const isVideo = thumbnail.classList.contains('product-video-thumbnail');
+    thumbnail.setAttribute('aria-label', isVideo ? 'Reproduzir vídeo do produto' : `Foto ${index} do produto`);
     const select = () => {
+      document.querySelectorAll('.saved-selected').forEach(el => el.classList.remove('saved-selected'));
+      thumbnail.classList.add('saved-selected');
+      galleryCount.textContent = `${index + 1}/${galleryItems.length}`;
+      if (isVideo) {
+        hero.style.display = 'none';
+        productVideo.classList.add('product-video-active');
+        productVideo.currentTime = 0;
+        productVideo.play().catch(() => {});
+        return;
+      }
+      productVideo.pause();
+      productVideo.classList.remove('product-video-active');
+      hero.style.display = '';
       const source = thumbnail.querySelector('source');
       const img = thumbnail.querySelector('img');
       const imageId = (source?.srcset || img.src).match(/br-11134207-[a-z0-9]+-[a-z0-9]+/);
       hero.src = imageId ? `./product-images/${imageId[0]}.jpg` : img.src;
       hero.alt = document.querySelector('h1').textContent;
-      document.querySelectorAll('.saved-selected').forEach(el => el.classList.remove('saved-selected'));
-      thumbnail.classList.add('saved-selected');
-      galleryCount.textContent = `${index}/${galleryItems.length}`;
     };
     thumbnail.addEventListener('click', select);
     thumbnail.addEventListener('keydown', event => {
