@@ -139,7 +139,6 @@
 
   async function loadVisits() {
     status.textContent = 'Atualizando…';
-    await db.rpc('cleanup_site_visits_daily');
     const response = await db.from('site_visits').select('*').gte('visited_at', startOfToday()).order('visited_at', { ascending: false });
     if (response.error) {
       status.textContent = 'Configuração pendente';
