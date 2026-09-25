@@ -139,20 +139,22 @@
 
   async function loadVisits() {
     status.textContent = 'Atualizando…';
-    const response = await db.from('site_visits').select('*').order('visited_at', { ascending: false });
+    await db.rpc('cleanup_site_visits_daily');
+    const response = await db.from('site_visits').select('*').gte('visited_at', startOfToday()).order('visited_at', { ascending: false });
     if (response.error) {
       status.textContent = 'Configuração pendente';
       list.innerHTML = '<tr><td colspan="4" class="empty">Conclua a configuração do banco de dados.</td></tr>';
       return;
     }
 
-    const rows = (response.data || []).filter(v => v.page !== '/verification');
-    const today = rows.filter(v => v.visited_at >= startOfToday());
+    const allRows = (response.data || []).filter(v => v.page !== '/verification');
+    const rows = [...new Map(allRows.map(v => [v.session_id, v])).values()];
+    const today = rows;
     const hourLimit = Date.now() - 60 * 60 * 1000;
     document.getElementById('today-count').textContent = today.length;
     document.getElementById('hour-count').textContent = rows.filter(v => new Date(v.visited_at).getTime() >= hourLimit).length;
     document.getElementById('unique-count').textContent = new Set(today.map(v => v.session_id)).size;
-    document.getElementById('total-count').textContent = rows.length;
+    document.getElementById('total-count').textContent = today.length;
     renderRows(rows);
     status.textContent = 'Ao vivo';
   }

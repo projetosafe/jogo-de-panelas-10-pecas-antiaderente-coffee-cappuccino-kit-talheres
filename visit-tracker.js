@@ -1,16 +1,30 @@
 (function () {
   const SUPABASE_URL = 'https://kdgsajlvbhnemyhrpfid.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_HheH5VnIfC8F_QpSUCZOkA_luBxmQM0';
-  const sessionKey = 'site_visit_session_id';
+  const visitorKey = 'site_unique_visitor_id';
+  const dailyVisitKey = 'site_daily_visit_date';
   const journeyKey = 'site_visit_journey';
-  let sessionId = sessionStorage.getItem(sessionKey);
+  let visitorId = localStorage.getItem(visitorKey);
+  let sessionId = '';
   let currentPage = location.pathname;
   let cachedDeviceModel = '';
 
-  if (!sessionId) {
-    sessionId = crypto.randomUUID();
-    sessionStorage.setItem(sessionKey, sessionId);
+  if (!visitorId) {
+    visitorId = crypto.randomUUID();
+    localStorage.setItem(visitorKey, visitorId);
   }
+
+  function localDateKey() {
+    const date = new Date();
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  function refreshDailySession() {
+    sessionId = `${visitorId}:${localDateKey()}`;
+    return sessionId;
+  }
+
+  refreshDailySession();
 
   function deviceType() {
     return matchMedia('(max-width: 767px)').matches ? 'Celular' : 'Computador';
@@ -60,6 +74,7 @@
   }
 
   async function updatePresence(page) {
+    refreshDailySession();
     currentPage = page || currentPage || location.pathname;
     const payload = {
       session_id: sessionId,
@@ -75,6 +90,11 @@
 
   async function recordVisit(page) {
     currentPage = page || location.pathname;
+    refreshDailySession();
+    if (localStorage.getItem(dailyVisitKey) === localDateKey()) {
+      await updatePresence(currentPage);
+      return;
+    }
     const payload = {
       session_id: sessionId,
       page: currentPage,
@@ -82,11 +102,12 @@
       device: deviceType(),
       device_model: await deviceModel()
     };
-    const response = await send('site_visits', payload);
+    let response = await send('site_visits', payload);
     if (!response.ok && payload.device_model) {
       delete payload.device_model;
-      await send('site_visits', payload);
+      response = await send('site_visits', payload);
     }
+    if (response.ok) localStorage.setItem(dailyVisitKey, localDateKey());
     await updatePresence(currentPage);
   }
 
