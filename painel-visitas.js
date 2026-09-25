@@ -40,6 +40,26 @@
     return `há ${seconds}s`;
   }
 
+  function dayKey(dateValue) {
+    const date = new Date(dateValue);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  function dayLabel(dateValue) {
+    const date = new Date(dateValue);
+    const today = new Date();
+    const yesterday = new Date();
+    today.setHours(0, 0, 0, 0);
+    yesterday.setDate(today.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);
+    const current = new Date(date);
+    current.setHours(0, 0, 0, 0);
+    if (current.getTime() === today.getTime()) return 'Hoje';
+    if (current.getTime() === yesterday.getTime()) return 'Ontem';
+    const label = date.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
+
   function parsePath(value, currentPage) {
     let path = value;
     if (typeof path === 'string') {
@@ -57,10 +77,21 @@
       list.innerHTML = '<tr><td colspan="4" class="empty">Nenhuma visita registrada.</td></tr>';
       return;
     }
-    list.innerHTML = rows.slice(0, 50).map(function (visit) {
-      const time = new Date(visit.visited_at).toLocaleString('pt-BR');
+    const visibleRows = rows.slice(0, 100);
+    const totalsByDay = visibleRows.reduce(function (totals, visit) {
+      const key = dayKey(visit.visited_at);
+      totals[key] = (totals[key] || 0) + 1;
+      return totals;
+    }, {});
+    let currentDay = '';
+    list.innerHTML = visibleRows.map(function (visit) {
+      const date = new Date(visit.visited_at);
+      const key = dayKey(visit.visited_at);
+      const separator = key === currentDay ? '' : `<tr class="day-separator"><td colspan="4"><div class="day-heading"><strong>${escapeHtml(dayLabel(visit.visited_at))}</strong><span>${totalsByDay[key]} ${totalsByDay[key] === 1 ? 'visita' : 'visitas'}</span></div></td></tr>`;
+      currentDay = key;
+      const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       const model = visit.device_model || visit.device || 'Não identificado';
-      return `<tr><td>${escapeHtml(time)}</td><td>${escapeHtml(pageLabel(visit.page))}</td><td>${escapeHtml(model)}</td><td>${escapeHtml(sourceLabel(visit.referrer))}</td></tr>`;
+      return `${separator}<tr><td>${escapeHtml(time)}</td><td>${escapeHtml(pageLabel(visit.page))}</td><td>${escapeHtml(model)}</td><td>${escapeHtml(sourceLabel(visit.referrer))}</td></tr>`;
     }).join('');
   }
 

@@ -26,6 +26,11 @@ button { border: 0; border-radius: 8px; padding: 11px 18px; color: #fff; backgro
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 15px 20px; border-bottom: 1px solid #eee; text-align: left; font-size: 14px; }
 th { color: #777; font-weight: 500; background: #fafafa; }
+.day-separator td { padding: 12px 20px; border-bottom-color: #f1d4cc; background: #fff5f2; color: #c93d23; }
+.day-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.day-separator td strong { font-size: 14px; }
+.day-separator td span { padding: 4px 8px; border-radius: 999px; background: #fff; color: #777; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.day-separator + tr td { border-top: 0; }
 .empty { padding: 38px 20px; color: #888; text-align: center; }
 
 .online-metric { border-color: #bdebd3 !important; background: linear-gradient(135deg, #fff, #f0fff7) !important; }
